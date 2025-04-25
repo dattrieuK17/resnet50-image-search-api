@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 import shutil
 import os
 from app.utils import search_image
+import traceback
 
 app = FastAPI()
 @app.get("/")
@@ -13,7 +14,7 @@ def root():
 async def search(file: UploadFile = File(...), top_k: int = 5):
     # Lưu ảnh tạm thời
     temp_path = f"/tmp/{file.filename}"
-    os.makedirs("temp", exist_ok=True)
+    os.makedirs("tmp", exist_ok=True)
     with open(temp_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     
@@ -23,6 +24,7 @@ async def search(file: UploadFile = File(...), top_k: int = 5):
         os.remove(temp_path)
         return results_df.to_dict(orient="records")
     except Exception as e:
+        traceback.print_exc()
         return JSONResponse(status_code=500, content={"error": str(e)})
 
 # uvicorn app.main:app --host 0.0.0.0 --port 8000
