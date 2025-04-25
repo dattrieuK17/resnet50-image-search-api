@@ -14,7 +14,7 @@ def root():
 async def search(file: UploadFile = File(...), top_k: int = 5):
     # Lưu ảnh tạm thời
     temp_path = f"/tmp/{file.filename}"
-    os.makedirs("tmp", exist_ok=True)
+    os.makedirs("/tmp", exist_ok=True)
     with open(temp_path, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
     
